@@ -55,44 +55,44 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.core.ktx.v1120)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v270)
+    implementation(libs.androidx.activity.compose.v182)
+    implementation(libs.androidx.compose.ui.ui)
+    implementation(libs.androidx.compose.ui.ui.graphics)
+    implementation(libs.androidx.compose.ui.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3.material3)
+    implementation(libs.material.icons.extended)
+    implementation(libs.androidx.navigation.compose.v277)
     
     // SwipeRefresh
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.34.0")
+    implementation(libs.com.google.accompanist.accompanist.swiperefresh7)
     
     // Koin
-    implementation("io.insert-koin:koin-android:3.5.3")
-    implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
     
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
     
     // Coil
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.coil.compose.v250)
     
     // WebSocket
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation(libs.com.squareup.okhttp3.okhttp)
     
     // DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.androidx.datastore.datastore.preferences)
     
     // Kotlinx Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation(libs.kotlinx.serialization.json)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.compose.ui.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.ui.tooling2)
+    debugImplementation(libs.androidx.compose.ui.ui.test.manifest2)
 }

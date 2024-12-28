@@ -133,7 +133,7 @@ fun ChatScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.1f))
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isLoading),
@@ -182,52 +182,68 @@ fun ChatScreen(
                     }
 
                     // Input field
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .navigationBarsPadding()
-                            .padding(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                    Surface(
+                        color = MaterialTheme.colorScheme.surface,
+                        modifier = Modifier.fillMaxWidth(),
+                        tonalElevation = 0.dp,
+                        shadowElevation = 0.dp
                     ) {
-                        TextField(
-                            value = messageText,
-                            onValueChange = { messageText = it },
+                        Row(
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 8.dp),
-                            placeholder = { Text("输入消息") },
-                            enabled = !isSending,
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                            ),
-                            shape = RoundedCornerShape(24.dp)
-                        )
-
-                        FloatingActionButton(
-                            onClick = {
-                                if (messageText.isNotBlank() && !isSending) {
-                                    pendingMessage = messageText
-                                    messageText = ""
-                                }
-                            },
-                            modifier = Modifier.size(48.dp),
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            shape = CircleShape
+                                .fillMaxWidth()
+                                .windowInsetsPadding(
+                                    WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)
+                                )
+                                .padding(
+                                    start = 8.dp,
+                                    end = 8.dp,
+                                    top = 12.dp,
+                                    bottom = 0.dp
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            if (isSending) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(24.dp),
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    strokeWidth = 2.dp
-                                )
-                            } else {
-                                Icon(
-                                    Icons.AutoMirrored.Filled.Send,
-                                    contentDescription = "发送",
-                                    tint = MaterialTheme.colorScheme.onPrimary
-                                )
+                            TextField(
+                                value = messageText,
+                                onValueChange = { messageText = it },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 8.dp)
+                                    .padding(vertical = 4.dp),
+                                placeholder = { Text("输入消息") },
+                                enabled = !isSending,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                ),
+                                shape = RoundedCornerShape(24.dp)
+                            )
+                            FloatingActionButton(
+                                onClick = {
+                                    if (messageText.isNotBlank() && !isSending) {
+                                        pendingMessage = messageText
+                                        messageText = ""
+                                    }
+                                },
+                                modifier = Modifier.size(48.dp),
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            ) {
+                                if (isSending) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        strokeWidth = 2.dp
+                                    )
+                                } else {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.Send,
+                                        contentDescription = "发送",
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
                             }
                         }
                     }

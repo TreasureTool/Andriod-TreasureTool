@@ -101,10 +101,11 @@ fun ChatMessageItem(
             }
 
             Surface(
-                color = if (isFromMe)
+                color = if (isFromMe) {
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
-                else
-                    MaterialTheme.colorScheme.surface,
+                } else {
+                    MaterialTheme.colorScheme.surface
+                },
                 shape = RoundedCornerShape(
                     topStart = if (isFromMe) 16.dp else 4.dp,
                     topEnd = if (isFromMe) 4.dp else 16.dp,

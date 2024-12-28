@@ -18,7 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFF89B4FA),          // 浅蓝色
-    onPrimary = Color(0xFF1E1E2E),        // 深色背景
+//    onPrimary = Color(0xFF1E1E2E),        // 深色背景
+    onPrimary = Color(0xFFEC0823),        // 深色背景
     primaryContainer = Color(0xFF313244),  // 次要容器
     onPrimaryContainer = Color(0xFFCDD6F4),// 容器文字
     secondary = Color(0xFFF5C2E7),        // 粉色
