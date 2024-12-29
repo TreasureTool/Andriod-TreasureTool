@@ -7,16 +7,16 @@ import java.util.UUID
 
 @Serializable
 data class ChatMessage (
-    val messageId: String = UUID.randomUUID().toString(),
-    var messageType: Int,
-    var isGroupMessage: Boolean,
-    var content: String,
-    var senderId: String,
-    var senderName: String,
-    var senderAvatar: String,
-    var receiverId: String,
-    val status: MessageStatus,
-    val sendTime: Long
+    val messageId: String = UUID.randomUUID().toString(),   // 消息唯一id
+    var messageType: Int,  // MessageType 枚举类型
+    var isGroupMessage: Boolean,    // 是否群消息
+    var content: String,    // 消息内容
+    var senderId: String,   // 消息发送人id
+    var senderName: String, // 消息发送人名称
+    var senderAvatar: String, // 消息发送人头像
+    var receiverId: String, // 消息接收人id
+    val status: MessageStatus,  // 消息状态
+    val sendTime: Long  // 消息发送时间
 ) {
 
     companion object {
@@ -51,6 +51,7 @@ data class ChatMessage (
     fun isFromMe(userId: String): Boolean {
         return senderId == userId
     }
+
 }
 
 @Serializable

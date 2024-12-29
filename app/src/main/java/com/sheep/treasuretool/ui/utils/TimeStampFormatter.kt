@@ -9,7 +9,7 @@ class TimeStampFormatter {
 
     companion object {
 
-        fun toSendTime(time: Long) : String {
+        fun formatSendTime(time: Long) : String {
             // 使用给定的秒级时间戳创建一个LocalDateTime实例
             val dateTime = LocalDateTime.ofEpochSecond(time, 0, ZoneId.systemDefault().rules.getOffset(LocalDateTime.now()))
 

@@ -3,11 +3,9 @@ package com.sheep.treasuretool
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,7 +22,7 @@ import com.sheep.treasuretool.ui.theme.TreasureToolTheme
 import com.sheep.treasuretool.data.local.UserPreferences
 import com.sheep.treasuretool.ui.screens.SplashScreen
 import com.sheep.treasuretool.ui.screens.MainScreen
-import com.sheep.treasuretool.service.WebSocketService
+import com.sheep.treasuretool.data.websocket.WebSocketService
 import com.sheep.treasuretool.data.local.AvatarCache
 import com.sheep.treasuretool.data.repository.UserRepository
 import kotlinx.coroutines.*

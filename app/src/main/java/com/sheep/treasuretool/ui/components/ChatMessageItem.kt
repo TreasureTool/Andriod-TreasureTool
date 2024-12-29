@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -33,41 +36,31 @@ fun ChatMessageItem(
     contact: Contact,
     modifier: Modifier = Modifier
 ) {
-    val isFromMe = message.isFromMe(currentUser.id)
-    fun getUserId():String {
-        return if (!isFromMe) {
-            if (contact.isGroup) {
-                message.senderId
-            } else{
-                contact.userId
-            }
-        } else{
-            currentUser.id
-        }
-    }
-    fun getContactName():String {
-        return if (contact.isGroup) {
-            message.senderName
-        } else{
-            contact.name
-        }
+    Log.d("121", "ChatMessageItemChatMessageItemChatMessageItemChatMessageItem")
+    val isFromMe = remember(message.senderId, currentUser.id) {
+        message.isFromMe(currentUser.id)
     }
 
-    fun getTime(sendTime: Long):String {
-        val toSendTime = TimeStampFormatter.toSendTime(sendTime)
-        return toSendTime
+    val messageContent = remember(message.content) {
+        message.content
     }
+
+    val messageTime = remember(message.sendTime) {
+        TimeStampFormatter.formatSendTime(message.sendTime)
+    }
+
+    Log.d("11111111111", "ChatMessageItem: ${message.messageId}")
 
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 4.dp),
-        horizontalArrangement = if (isFromMe) Arrangement.End else Arrangement.Start,
-        verticalAlignment = Alignment.Bottom
+            .padding(horizontal = 12.dp, vertical = 4.dp)
+            .then(if (isFromMe) Modifier else Modifier),
+        horizontalArrangement = if (isFromMe) Arrangement.End else Arrangement.Start
     ) {
         if (!isFromMe) {
             ContactAvatar(
-                userId = getUserId(),
+                userId = currentUser.id,
                 avatarCache = avatarCache,
                 modifier = Modifier.size(36.dp)
             )
@@ -87,14 +80,14 @@ fun ChatMessageItem(
             ) {
                 if (!isFromMe) {
                     Text(
-                        text = getContactName(),
+                        text = contact.name,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(end = 8.dp)
                     )
                 }
                 Text(
-                    text = getTime(message.sendTime),
+                    text = messageTime,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
@@ -102,9 +95,9 @@ fun ChatMessageItem(
 
             Surface(
                 color = if (isFromMe) {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
+                    MaterialTheme.colorScheme.onPrimaryContainer
                 } else {
-                    MaterialTheme.colorScheme.surface
+                    MaterialTheme.colorScheme.primaryContainer
                 },
                 shape = RoundedCornerShape(
                     topStart = if (isFromMe) 16.dp else 4.dp,
@@ -115,7 +108,7 @@ fun ChatMessageItem(
                 shadowElevation = 1.dp
             ) {
                 Text(
-                    text = message.content,
+                    text = messageContent,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontSize = 15.sp
@@ -123,7 +116,7 @@ fun ChatMessageItem(
                     color = if (isFromMe)
                         MaterialTheme.colorScheme.onPrimary
                     else
-                        MaterialTheme.colorScheme.onSurface
+                        MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -131,7 +124,7 @@ fun ChatMessageItem(
         if (isFromMe) {
             Spacer(modifier = Modifier.width(8.dp))
             ContactAvatar(
-                userId = getUserId(),
+                userId = currentUser.id,
                 avatarCache = avatarCache,
                 modifier = Modifier.size(36.dp)
             )

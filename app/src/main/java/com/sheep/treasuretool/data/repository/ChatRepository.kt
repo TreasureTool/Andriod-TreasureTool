@@ -2,11 +2,10 @@ package com.sheep.treasuretool.data.repository
 
 import android.util.Log
 import com.sheep.treasuretool.data.api.ApiService
-import com.sheep.treasuretool.data.local.ContactStore
 import com.sheep.treasuretool.data.local.MessageStore
 import com.sheep.treasuretool.data.model.entity.ChatMessage
 import com.sheep.treasuretool.data.model.entity.MessageStatus
-import com.sheep.treasuretool.data.websocket.ChatWebSocket
+import com.sheep.treasuretool.data.websocket.TreasureWebSocket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -14,7 +13,7 @@ import kotlin.coroutines.resume
 
 class ChatRepository(
     private val messageStore: MessageStore,
-    private val webSocket: ChatWebSocket
+    private val webSocket: TreasureWebSocket
 ) {
 
     /**

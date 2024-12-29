@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import com.google.gson.Gson
 import com.sheep.treasuretool.data.model.Contact
 import com.sheep.treasuretool.data.model.entity.ChatMessage
 import com.sheep.treasuretool.data.model.entity.MessageStatus

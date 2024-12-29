@@ -1,8 +1,6 @@
 package com.sheep.treasuretool.data.websocket
 
 import android.util.Log
-import com.sheep.treasuretool.data.local.ContactStore
-import com.sheep.treasuretool.data.local.MessageStore
 import com.sheep.treasuretool.data.local.UserPreferences
 import com.sheep.treasuretool.data.model.*
 import com.sheep.treasuretool.data.model.entity.ChatMessage
@@ -13,11 +11,10 @@ import kotlinx.serialization.json.*
 import okhttp3.*
 import java.util.concurrent.TimeUnit
 
-class ChatWebSocket(
+class TreasureWebSocket(
     private val baseUrl: String,
     private val userPreferences: UserPreferences,
-    private val messageStore: MessageStore,
-    private val contactStore: ContactStore,
+    private val webSocketMessageHandler: WebSocketMessageHandler,
     private val client: OkHttpClient = OkHttpClient.Builder()
         .pingInterval(30, TimeUnit.SECONDS)
         .build()
@@ -46,7 +43,7 @@ class ChatWebSocket(
                     override fun onMessage(webSocket: WebSocket, text: String) {
                         try {
                             val frame = MessageFrame.json.decodeFromString<MessageFrame<JsonElement>>(text)
-                            handleMessage(frame)
+                            webSocketMessageHandler.handleMessage(frame)
                         } catch (e: Exception) {
                             Log.e("WebSocket", "消息处理失败: $text", e)
                         }
@@ -77,7 +74,6 @@ class ChatWebSocket(
                 type = FrameType.CHAT_MESSAGE,
                 data = message
             )
-            Log.i("sendTime", "${frame.data.sendTime}")
             val frameJson = MessageFrame.json.encodeToString(frame)
             
             if (_connectionState.value is ConnectionState.Connected) {
@@ -90,33 +86,6 @@ class ChatWebSocket(
         } catch (e: Exception) {
             Log.e("WebSocket", "消息发送失败", e)
             callback(Result.failure(e))
-        }
-    }
-
-    private fun handleMessage(frame: MessageFrame<JsonElement>) {
-        Log.d("handleMessage", "$frame")
-        scope.launch {
-            when (frame.type) {
-                FrameType.CHAT_MESSAGE -> {
-                    try {
-                        val chatMessage = MessageFrame.json.decodeFromJsonElement<ChatMessage>(frame.data)
-                        // 保存消息到本地缓存
-                        messageStore.saveMessage(chatMessage)
-                    } catch (e: Exception) {
-                        Log.e("WebSocket", "解析聊天消息失败", e)
-                    }
-                }
-                FrameType.ONLINE_MESSAGE -> {
-                    try {
-                        val onlineStatus = MessageFrame.json.decodeFromJsonElement<OnlineMessage>(frame.data)
-                        Log.d("WebSocket", "用户在线状态更新: ${onlineStatus.userId} -> ${onlineStatus.status}")
-                        // TODO: 通知UI更新用户在线状态
-                    } catch (e: Exception) {
-                        Log.e("WebSocket", "解析在线状态消息失败", e)
-                    }
-                }
-                else -> Log.i("WebSocket", "未知消息类型: ${frame.type}")
-            }
         }
     }
 

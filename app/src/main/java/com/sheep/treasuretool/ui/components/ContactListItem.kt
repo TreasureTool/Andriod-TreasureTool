@@ -1,5 +1,6 @@
 package com.sheep.treasuretool.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -9,6 +10,9 @@ import androidx.compose.ui.unit.dp
 import com.sheep.treasuretool.data.model.Contact
 import com.sheep.treasuretool.data.local.AvatarCache
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import com.sheep.treasuretool.data.model.OnlineStatus
 
 @Composable
 fun ContactListItem(
@@ -32,7 +36,15 @@ fun ContactListItem(
                 userId = contact.userId,
                 avatarCache = avatarCache
             )
-            
+            if (contact.status == OnlineStatus.ONLINE) {
+                Badge(
+                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(8.dp)
+                        .offset(y = (36).dp)
+                )
+            }
             // 未读消息数
             if (contact.unreadCount > 0) {
                 Badge(

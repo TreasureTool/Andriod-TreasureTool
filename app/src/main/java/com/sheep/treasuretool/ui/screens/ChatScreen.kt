@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,13 +27,13 @@ import com.sheep.treasuretool.data.local.MessageStore
 import com.sheep.treasuretool.data.local.UserPreferences
 import com.sheep.treasuretool.data.model.entity.MessageStatus
 import com.sheep.treasuretool.data.repository.ChatRepository
-import com.sheep.treasuretool.ui.components.ChatMessageItem
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import com.sheep.treasuretool.data.model.entity.User
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.sheep.treasuretool.ui.components.ChatMessageItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,10 +49,10 @@ fun ChatScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var messageText by remember { mutableStateOf("") }
-    var messages by remember { mutableStateOf(listOf<ChatMessage>()) }
-    var isLoading by remember { mutableStateOf(false) }
-    var isSending by remember { mutableStateOf(false) }
+    var messageText by rememberSaveable { mutableStateOf("") }
+    var messages = remember { mutableStateListOf<ChatMessage>() }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var isSending by rememberSaveable { mutableStateOf(false) }
     val listState = rememberLazyListState()
     var currentUser by remember { mutableStateOf<User?>(null) }
     var pendingMessage by remember { mutableStateOf<String?>(null) }
@@ -62,7 +63,8 @@ fun ChatScreen(
     LaunchedEffect(Unit) {
         currentUser = userPreferences.currentUser.first()
         messageStore.getMessages(contact).collect { updatedMessages ->
-            messages = updatedMessages
+            messages.clear()
+            messages.addAll(updatedMessages)
             offset = updatedMessages.size
             // 更新未读消息状态
             updatedMessages.filter { !it.isFromMe(currentUser!!.id) && it.status != MessageStatus.READ }
@@ -86,6 +88,7 @@ fun ChatScreen(
                     sender = currentUser!!,
                     receiver = contact
                 )
+                messages.add(newMessage)
                 chatRepository.sendMessage(newMessage)
             } finally {
                 isSending = false
@@ -168,16 +171,22 @@ fun ChatScreen(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
-                        reverseLayout = false,
-                        state = listState
+                        reverseLayout = true,
+                        state = listState,
+                        verticalArrangement = Arrangement.Top
                     ) {
-                        items(messages.reversed()) { message ->
-                            ChatMessageItem(
-                                message = message,
-                                avatarCache = avatarCache,
-                                currentUser = currentUser!!,
-                                contact = contact
-                            )
+                        items(
+                            items = messages,
+                            key = { it.messageId }
+                        ) { message ->
+                            key(message.messageId) {
+                                ChatMessageItem(
+                                    message = message,
+                                    avatarCache = avatarCache,
+                                    currentUser = currentUser!!,
+                                    contact = contact
+                                )
+                            }
                         }
                     }
 

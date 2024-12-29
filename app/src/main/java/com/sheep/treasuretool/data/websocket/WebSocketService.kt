@@ -1,4 +1,4 @@
-package com.sheep.treasuretool.service
+package com.sheep.treasuretool.data.websocket
 
 import android.app.*
 import android.content.Intent
@@ -7,19 +7,15 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.sheep.treasuretool.MainActivity
 import com.sheep.treasuretool.R
-import com.sheep.treasuretool.data.local.UserPreferences
-import com.sheep.treasuretool.data.websocket.ChatWebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class WebSocketService : Service() {
-    private val userPreferences: UserPreferences by inject()
-    private val chatWebSocket: ChatWebSocket by inject()
+    private val treasureWebSocket: TreasureWebSocket by inject()
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val notificationManager by lazy { 
         getSystemService(NOTIFICATION_SERVICE) as NotificationManager 
@@ -34,10 +30,7 @@ class WebSocketService : Service() {
         startForeground(NOTIFICATION_ID, notification)
         
         serviceScope.launch {
-            val currentUser = userPreferences.currentUser.first()
-            if (currentUser != null) {
-                chatWebSocket.connect()
-            }
+            treasureWebSocket.connect()
         }
     }
 
@@ -49,7 +42,7 @@ class WebSocketService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        chatWebSocket.disconnect()
+        treasureWebSocket.disconnect()
         serviceScope.cancel()
     }
 

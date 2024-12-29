@@ -10,6 +10,7 @@ data class Contact(
     val type: Int,
     val name: String,
     val avatar: String,
+    var status: OnlineStatus,
     @Transient
     val lastMessage: ChatMessage? = null,
     val unreadCount: Int = 0

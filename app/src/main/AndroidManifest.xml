@@ -40,7 +40,7 @@
 
         <!-- WebSocket服务 -->
         <service
-            android:name=".service.WebSocketService"
+            android:name=".data.websocket.WebSocketService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="dataSync" />

@@ -14,7 +14,9 @@ import com.sheep.treasuretool.data.local.UserPreferences
 import com.sheep.treasuretool.data.repository.AuthRepository
 import com.sheep.treasuretool.data.repository.ChatRepository
 import com.sheep.treasuretool.data.repository.UserRepository
-import com.sheep.treasuretool.data.websocket.ChatWebSocket
+import com.sheep.treasuretool.data.websocket.TreasureWebSocket
+import com.sheep.treasuretool.data.websocket.WebSocketMessageHandler
+import com.sheep.treasuretool.service.ContactService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -38,12 +40,13 @@ class App : Application(), ImageLoaderFactory {
         single { AuthRepository(get(), get()) }
         single { ChatRepository(get(), get()) }
         single { UserRepository(get(), get(), get()) }
+        single { ContactService(get(), get()) }
+        single { WebSocketMessageHandler(get(), get()) }
         single { 
-            ChatWebSocket(
+            TreasureWebSocket(
                 baseUrl = "ws://192.168.31.162:8081/websocket",
                 userPreferences = get(),
-                messageStore = get(),
-                contactStore = get()
+                webSocketMessageHandler = get()
             )
         }
     }

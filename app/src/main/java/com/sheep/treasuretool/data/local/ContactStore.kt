@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sheep.treasuretool.data.model.Contact
+import com.sheep.treasuretool.data.model.entity.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -38,6 +39,19 @@ class ContactStore(
             contacts
         }
     }.flowOn(Dispatchers.IO)
+
+    /**
+     * 获取联系人列表
+     */
+    fun getContacts(user: User): Flow<List<Contact>> {
+        return context.contactDataStore.data.map { preferences ->
+            val key = stringPreferencesKey("${user.id}_contacts")
+            val contactsJson = preferences[key] ?: "[]"
+            val contactsType = object : TypeToken<List<Contact>>() {}.type
+            val contacts = gson.fromJson<List<Contact>>(contactsJson, contactsType)
+            contacts
+        }
+    }
 
     /**
      * 保存联系人列表

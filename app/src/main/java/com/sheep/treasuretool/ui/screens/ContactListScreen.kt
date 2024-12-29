@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sheep.treasuretool.data.model.Contact
 import com.sheep.treasuretool.data.local.AvatarCache
-import com.sheep.treasuretool.data.local.ContactStore
+import com.sheep.treasuretool.service.ContactService
 import com.sheep.treasuretool.ui.components.ContactListItem
 import org.koin.compose.koinInject
 
@@ -18,14 +18,14 @@ fun ContactListScreen(
     onContactClick: (Contact) -> Unit = {},
     modifier: Modifier
 ) {
-    val contactStore: ContactStore = koinInject()
+    val contactService: ContactService = koinInject()
     val avatarCache: AvatarCache = koinInject()
-    var contacts by remember { mutableStateOf<List<Contact>>(emptyList()) }
-    
+    val contacts = remember { mutableStateListOf<Contact>() }
+
     // 监听联系人列表更新
     LaunchedEffect(Unit) {
-        contactStore.contacts.collect { updatedContacts ->
-            contacts = updatedContacts
+        contactService.contacts.collect { contact ->
+            contacts.add(contact)
         }
     }
 

@@ -13,6 +13,8 @@ import com.sheep.treasuretool.data.model.Contact
 import kotlinx.serialization.json.Json
 import com.sheep.treasuretool.R
 import com.sheep.treasuretool.ui.theme.TreasureToolTheme
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.runtime.DisposableEffect
 
 class ChatActivity : ComponentActivity() {
 
@@ -32,16 +34,27 @@ class ChatActivity : ComponentActivity() {
 
         setContent {
             TreasureToolTheme {
+                val focusManager = LocalFocusManager.current
+                
+                DisposableEffect(Unit) {
+                    onDispose {
+                        focusManager.clearFocus()
+                    }
+                }
+
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .systemBarsPadding()  // 只保留状态栏的内边距
-                        .navigationBarsPadding(),  // 移除导航栏的内边距
+                        .systemBarsPadding()
+                        .navigationBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     ChatScreen(
                         contact = contact,
-                        onBackClick = { finish() }
+                        onBackClick = { 
+                            focusManager.clearFocus()
+                            finish() 
+                        }
                     )
                 }
             }

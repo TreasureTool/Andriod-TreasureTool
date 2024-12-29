@@ -54,21 +54,16 @@ class AvatarCache(private val context: Context) {
             val cacheFile = getCacheFile(userId, url)
             Log.i("AvatarCache", "保存头像到本地缓存 ${cacheFile.absolutePath}")
 
-            if (cacheFile.exists()) {
-                // 更新内存缓存
-                loadBitMapCache(userId, cacheFile)
-                return@withContext
-            }
-
-            Log.i("AvatarCache", "下载头像${url}")
-            URL(url).openStream().use { input ->
-                FileOutputStream(cacheFile).use { output ->
-                    input.copyTo(output)
+            if (!cacheFile.exists()) {
+                Log.i("AvatarCache", "下载头像${url}")
+                URL(url).openStream().use { input ->
+                    FileOutputStream(cacheFile).use { output ->
+                        input.copyTo(output)
+                    }
                 }
             }
 
             loadBitMapCache(userId, cacheFile)
-
             // 保存映射关系
             context.avatarDataStore.edit { preferences ->
                 val currentMap = getAvatarMapFromPreferences(preferences)
@@ -90,9 +85,11 @@ class AvatarCache(private val context: Context) {
             preferences[AVATAR_MAP].let { json ->
                 val type = object : TypeToken<Map<String, String>>() {}.type
                 val fromJson = gson.fromJson<Map<String, String>>(json, type)
-                fromJson?.map {
-                    Log.i("AvatarCache", "预加载用户[${it.key}]头像 -> 地址 [${it.value}]")
-                    loadBitMapCache(it.key, File(it.value))
+                if (json != null) {
+                    Log.i("AvatarCache", "预加载用户头像 -> size = [${fromJson.size}]")
+                    fromJson?.map {
+                        loadBitMapCache(it.key, File(it.value))
+                    }
                 }
             }
         }
@@ -100,6 +97,7 @@ class AvatarCache(private val context: Context) {
 
     private fun loadBitMapCache (userId: String, file: File) {
         try {
+            Log.i("AvatarCache", "预加载用户[${userId}]头像 -> 地址 [${file.absolutePath}]")
             // 确保内存缓存已加载
             BitmapFactory.decodeFile(file.absolutePath)?.let { bitmap ->
                 bitmapCache.put(userId, bitmap)

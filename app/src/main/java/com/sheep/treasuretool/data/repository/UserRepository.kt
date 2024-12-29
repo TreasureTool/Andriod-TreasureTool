@@ -5,12 +5,13 @@ import com.sheep.treasuretool.data.api.ApiService
 import com.sheep.treasuretool.data.local.AvatarCache
 import com.sheep.treasuretool.data.local.ContactStore
 import com.sheep.treasuretool.data.local.UserPreferences
+import com.sheep.treasuretool.service.ContactService
 import kotlinx.coroutines.flow.first
 
 class UserRepository(
     private val userPreferences: UserPreferences,
     private val avatarCache: AvatarCache,
-    private val contactStore: ContactStore
+    private val contactService: ContactService
 ) {
 
     /**
@@ -36,7 +37,7 @@ class UserRepository(
     }
 
     /**
-     * 更新用户信息
+     * 更新用户联系人信息
      */
     suspend fun updateUserContact() {
         try {
@@ -46,17 +47,17 @@ class UserRepository(
             if (response.success && response.data != null) {
                 val data = response.data
                 // 1. 保存联系人列表
-                contactStore.saveContacts(data)
+                contactService.saveContactCache(data)
                 // 2. 保存联系人头像缓存
                 data.forEach {
                     avatarCache.saveAvatar(it.userId, it.avatar)
                 }
-                Log.d("UserRepository", "联系人缓存更新成功")
+                Log.d("UserRepository", "用户联系人缓存更新成功")
             } else {
-                Log.w("UserRepository", "获取用户信息失败: ${response.message}")
+                Log.w("UserRepository", "获取用户联系人信息失败: ${response.message}")
             }
         } catch (e: Exception) {
-            Log.e("UserRepository", "获取用户信息出错", e)
+            Log.e("UserRepository", "获取用户联系人信息出错", e)
         }
     }
 
