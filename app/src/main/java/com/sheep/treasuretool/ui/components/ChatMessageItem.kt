@@ -36,7 +36,6 @@ fun ChatMessageItem(
     contact: Contact,
     modifier: Modifier = Modifier
 ) {
-    Log.d("121", "ChatMessageItemChatMessageItemChatMessageItemChatMessageItem")
     val isFromMe = remember(message.senderId, currentUser.id) {
         message.isFromMe(currentUser.id)
     }
@@ -48,8 +47,6 @@ fun ChatMessageItem(
     val messageTime = remember(message.sendTime) {
         TimeStampFormatter.formatSendTime(message.sendTime)
     }
-
-    Log.d("11111111111", "ChatMessageItem: ${message.messageId}")
 
     Row(
         modifier = Modifier

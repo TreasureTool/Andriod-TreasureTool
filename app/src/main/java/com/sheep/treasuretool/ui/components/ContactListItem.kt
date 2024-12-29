@@ -1,6 +1,5 @@
 package com.sheep.treasuretool.ui.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -10,17 +9,29 @@ import androidx.compose.ui.unit.dp
 import com.sheep.treasuretool.data.model.Contact
 import com.sheep.treasuretool.data.local.AvatarCache
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.clip
-import com.sheep.treasuretool.data.model.OnlineStatus
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import com.sheep.treasuretool.service.ContactService
 
 @Composable
 fun ContactListItem(
     contact: Contact,
     onClick: () -> Unit,
     avatarCache: AvatarCache,
+    contactService: ContactService,
     modifier: Modifier = Modifier
 ) {
+
+    val onlineStatus = remember { mutableStateOf(contact.isOnline) }
+    val lastMessage = remember { mutableStateOf(null) }
+
+    LaunchedEffect(Unit) {
+        contactService.getContactStatus(contact).collect {
+            onlineStatus.value = it
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -36,7 +47,7 @@ fun ContactListItem(
                 userId = contact.userId,
                 avatarCache = avatarCache
             )
-            if (contact.status == OnlineStatus.ONLINE) {
+            if (onlineStatus.value) {
                 Badge(
                     containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier

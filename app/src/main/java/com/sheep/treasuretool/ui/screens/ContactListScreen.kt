@@ -25,7 +25,9 @@ fun ContactListScreen(
     // 监听联系人列表更新
     LaunchedEffect(Unit) {
         contactService.contacts.collect { contact ->
-            contacts.add(contact)
+            if (!contacts.contains(contact)) {
+                contacts.add(contact)
+            }
         }
     }
 
@@ -40,7 +42,8 @@ fun ContactListScreen(
             ContactListItem(
                 contact = contact,
                 onClick = { onContactClick(contact) },
-                avatarCache = avatarCache
+                avatarCache = avatarCache,
+                contactService = contactService
             )
             if (contacts.indexOf(contact) < contacts.size - 1) {
                 HorizontalDivider(

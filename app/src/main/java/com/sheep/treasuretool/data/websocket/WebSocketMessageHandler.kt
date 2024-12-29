@@ -1,11 +1,10 @@
 package com.sheep.treasuretool.data.websocket
 
 import android.util.Log
-import com.sheep.treasuretool.data.local.ContactStore
 import com.sheep.treasuretool.data.local.MessageStore
+import com.sheep.treasuretool.data.model.Contact
 import com.sheep.treasuretool.data.model.FrameType
 import com.sheep.treasuretool.data.model.MessageFrame
-import com.sheep.treasuretool.data.model.OnlineMessage
 import com.sheep.treasuretool.data.model.entity.ChatMessage
 import com.sheep.treasuretool.service.ContactService
 import kotlinx.coroutines.CoroutineScope
@@ -45,9 +44,9 @@ class WebSocketMessageHandler(
     private fun handleOnlineMessage(frame: MessageFrame<JsonElement>) {
         scope.launch {
             try {
-                val message = MessageFrame.json.decodeFromJsonElement<OnlineMessage>(frame.data)
-                Log.d("WebSocket", "用户在线状态更新: ${message.userId} -> ${message.status}")
-                contactService.updateContactStatus(message.userId, message.status)
+                val contact = MessageFrame.json.decodeFromJsonElement<Contact>(frame.data)
+                Log.d("WebSocket", "用户在线状态更新: ${contact.userId} -> ${contact.status}")
+                contactService.updateContactStatus(contact.userId, contact.status)
             } catch (e: Exception) {
                 Log.e("WebSocket", "解析在线状态消息失败", e)
             }

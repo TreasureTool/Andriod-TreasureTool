@@ -40,7 +40,7 @@ class App : Application(), ImageLoaderFactory {
         single { AuthRepository(get(), get()) }
         single { ChatRepository(get(), get()) }
         single { UserRepository(get(), get(), get()) }
-        single { ContactService(get(), get()) }
+        single { ContactService(get()) }
         single { WebSocketMessageHandler(get(), get()) }
         single { 
             TreasureWebSocket(

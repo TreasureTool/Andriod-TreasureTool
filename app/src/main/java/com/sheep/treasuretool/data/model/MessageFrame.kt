@@ -50,12 +50,6 @@ enum class FrameType {
 }
 
 @Serializable
-data class OnlineMessage(
-    val userId: String,
-    val status: OnlineStatus
-)
-
-@Serializable
 enum class OnlineStatus {
     @SerialName("ONLINE")
     ONLINE,    // 在线
